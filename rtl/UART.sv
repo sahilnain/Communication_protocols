@@ -62,28 +62,28 @@ module UART
     always_comb begin : NextTxFSM
         padded_tx_data = {1'b0, TxData};
         if(TxReq | TxBusy) begin
-            next_state_tx = `BUSY;
+            TxBusy         = 1'b1;
+            next_state_tx  = `BUSY;
+            if(transmit_count == 0) begin
+                TxBusy <= 1'b0;
+            end
         end else begin
             next_state_tx  = `IDLE;
+            TxBusy         = 1'b0;
         end
     end
 
     always @(posedge clk, reset) begin : Transmit
         if(reset == 1'b0) begin
             Tx             <= 1'b1;
-            TxBusy         <= 1'b0;
             padded_tx_data <= 33'b0;
-            transmit_count <= 33;
+            transmit_count <= `DATA_WIDTH + 1;
         end else begin // if(reset == 1'b1)
-            if(cur_state_tx == `BUSY) begin
-                TxBusy         <= 1'b1;
+            if(TxBusy == 1'b1) begin
                 Tx             <= padded_tx_data[transmit_count-1];
                 transmit_count <= transmit_count - 1;
-                if(transmit_count == 0) begin
-                    TxBusy <= 1'b0;
-                end
             end else begin
-                transmit_count <= 33;
+                transmit_count <= `DATA_WIDTH + 1;
             end
         end
     end
@@ -117,13 +117,13 @@ module UART
     always @(posedge clk, reset) begin
         if(!reset) begin
             RxData        <= 32'b0;
-            receive_count <= 32;
+            receive_count <= `DATA_WIDTH;
         end else begin
             if(cur_state_rx == `BUSY) begin
                 RxData[receive_count-1] <= Rx;
                 receive_count <= receive_count - 1;
             end else begin
-                receive_count <= 32;
+                receive_count <= `DATA_WIDTH;
             end
         end
     end
