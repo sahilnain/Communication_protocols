@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1757661522" />
+    <testcase name="test_uart" classname="tb.test_uart" file="/home/sahil/Communication_protocols/tb/test_uart.py" lineno="14" time="0.010233879089355469" sim_time_ns="75.001" ratio_time="7328.69709961793" />
+  </testsuite>
+</testsuites>
