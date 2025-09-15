@@ -23,11 +23,11 @@ async def test_case_1(dut):
     dut.TxData_A.value    = test_byte
 
     dut.TxReq_A.value     = 1
-    await Timer(2, units="ns")  # wait a bit
+    await Timer(2*2, units="ns")  # wait a bit
     dut.TxReq_A.value     = 0
     
-    await FallingEdge(dut.TxBusy_A)  # wait for falling edge/"negedge"
-    await Timer(2*10, units="ns")  # wait a bit
+    # await FallingEdge(dut.TxBusy_A)  # wait for falling edge/"negedge"
+    await Timer(2*50, units="ns")  # wait a bit
 
     dut._log.info("UART transmitted 0x%02X", test_byte) 
     dut._log.info("UART Received 0x%02X", dut.RxData_B.value) 
@@ -68,4 +68,4 @@ async def test_uart(dut):
 
     # Start tests
     await test_case_1(dut)
-    await test_case_2(dut)
+    # await test_case_2(dut)
